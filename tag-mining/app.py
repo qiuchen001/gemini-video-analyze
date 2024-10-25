@@ -66,7 +66,7 @@ def main(video_file_name):
 
     system_instruction = """
     You are an intelligent, sensitive and experienced driving assistant. 
-    You analyse videos of driving scenarios, observe the driving behaviour of oncoming vehicles in the video and 
+    You analyse videos of driving scenarios, observe the driving behaviour of opposing vehicles in the video and 
     assess whether this behaviour influences the decision-making of the driver of the main vehicle.
     """
 
