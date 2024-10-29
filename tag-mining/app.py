@@ -65,55 +65,54 @@ def main(video_file_name):
     video_file = genai.get_file(video_file_name)
 
     system_instruction = """
-    You are an intelligent, sensitive and experienced driving assistant. 
-    You analyse videos of driving scenarios, observe the driving behaviour of opposing vehicles in the video and 
-    assess whether this behaviour influences the decision-making of the driver of the main vehicle.
+    你是一名聪明、敏感、经验丰富的驾驶助理。
+    您可以分析驾驶场景视频，观察视频中对向车辆的驾驶行为，并评估这种行为是否会影响主车驾驶员的决策。
+    评估这种行为是否会影响主车驾驶员的决策。
     """
 
     prompt = """
-    In driving scenarios, the behavior of other vehicles can significantly influence the primary vehicle's driver's decisions. Below are common potentially dangerous behaviors:
+    在驾驶场景中，其他车辆的行为会极大地影响主车驾驶员的决策。以下是常见的潜在危险行为：
+    突然移动
+        B1: 突然制动： 对手车辆突然刹车。
+        B2: 突然加速/减速： 对手车辆突然改变速度。
+    车道和信号问题
+        B3: 无警告变道： 对手车辆在未发出信号的情况下变更车道。
+        B4：并线过近： 对手车辆并线太近。
+        B5：占用多个车道： 对手车辆因体积、超载或操作不当而占用两条或两条以上车道，迫使主车驾驶员调整路线或速度以避免碰撞。
+    违反交通规则
+        B6：逆向行驶： 对手车辆逆向行驶。
+        B7：闯红灯： 对手车辆在红灯亮起时驶过人行横道。
+    注意力不集中的驾驶
+        B8: 不使用指示灯： 对手车辆不发出转弯或停车信号。
+        B9: 占用盲点： 对手车辆在盲区逗留。
+    危险转弯和停车
+        B10: 突然转弯： 对手车辆转弯不打信号。
+        B11: 突然停车： 对手车辆意外停车。
+    灯光问题
+        B12: 夜间不开前灯： 对手车辆行驶时不开大灯。
+        B13: 不适当使用远光灯： 对手车辆的远光灯造成眩光。
+    杂项
+        B14: 驾驶不稳定： 对手车辆表现出不可预测的行为。
+        B15：停车不当： 对手车辆妨碍停车。
 
-    Sudden Movements
-        B1: Sudden Braking: Opposing vehicle brakes unexpectedly.
-        B2: Sudden Acceleration/Deceleration: Opposing vehicle changes speed abruptly.
-    Lane and Signal Issues
-        B3: Lane Changing Without Warning: Opposing vehicle changes lanes without signaling.
-        B4: Merging Closely: Opposing vehicle merges too closely.
-        B5: Occupying Multiple Lanes: Opposing vehicle occupies two or more lanes due to its size, overloading, or improper operation, forcing the main vehicle driver to adjust their route or speed to avoid collision.
-    Traffic Violations
-        B6: Driving Against Traffic: Opposing vehicle drives in the wrong direction.
-        B7: Jumping the Light: Opposing vehicle runs a red light.
-    Inattentive Driving
-        B8: Not Using Indicators: Opposing vehicle doesn't signal turns or stops.
-        B9: Occupying Blind Spots: Opposing vehicle lingers in blind spots.
-    Dangerous Turns and Stops
-        B10: Unannounced Turning: Opposing vehicle turns without signaling.
-        B11: Sudden Stopping: Opposing vehicle stops unexpectedly.
-    Lighting Issues
-        B12: Not Using Headlights at Night: Opposing vehicle drives without headlights.
-        B13: Using High Beams Inappropriately: Opposing vehicle's high beams cause glare.
-    Miscellaneous
-        B14: Erratic Driving: Opposing vehicle exhibits unpredictable behavior.
-        B15: Improper Parking: Opposing vehicle parks obstructively.
+    在视频中，对对手车辆的行为进行分析，并使用分配的 ID 进行识别。可以有多种行为。
 
-    In the video, the other vehicle is analysed for these behaviours and identified using the assigned ID. There can be multiple behaviours.
-
-    Output JSON Format:
+以JSON的格式输出：
     [
       {
-        "analysis": "Detailed analysis of the video scenario...",
+        "analysis": "对视频场景的详细分析...",
         "behaviour": {
           "behaviourId": "B1",
-          "behaviourName": "Sudden Braking",
-          "timeRange": "Time range during which the behavior occurred" # e.g. "00:00:11-00:00:16"
+          "behaviourName": "突然制动",
+          "timeRange": "00:00:11-00:00:1" #  行为发生的时间范围
         }
       },
       {
-        "analysis": "Detailed analysis of the video scenario...",
+        "analysis": "对视频场景的详细分析...",
         "behaviour": {
           "behaviourId": "B2",
-          "behaviourName": "Sudden Acceleration/Deceleration",
-          "timeRange": "Time range during which the behavior occurred" # e.g. "00:00:11-00:00:16"
+          "behaviourName": "突然加速/减速",
+          "timeRange": "00:00:11-00:00:1" #  行为发生的时间范围
         }
       }
       ...
