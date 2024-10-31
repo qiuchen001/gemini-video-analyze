@@ -2,11 +2,13 @@ import os
 import time
 import json
 import shortuuid
+import ffmpeg
 import google.generativeai as genai
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import logging
 from werkzeug.utils import secure_filename
+from minio_uploader import MinioFileUploader
 
 load_dotenv()
 
@@ -56,6 +58,67 @@ def wait_for_files_active(video_file):
 
     app.logger.debug("...video_file ready\n")
     print()
+
+
+def time_to_seconds(time_str):
+    """将 '0:13' 或 '1:23:45' 格式的时间转换为秒"""
+    parts = list(map(int, time_str.split(':')))
+
+    if len(parts) == 2:
+        # 格式为 '0:13'
+        minutes, seconds = parts
+        return minutes * 60 + seconds
+    elif len(parts) == 3:
+        # 格式为 '1:23:45'
+        hours, minutes, seconds = parts
+        return hours * 3600 + minutes * 60 + seconds
+    else:
+        raise ValueError("时间格式不正确，应为 '0:13' 或 '1:23:45'")
+
+
+def get_thumbnail(video_path, thumbnail_path, time_seconds):
+    if not os.path.exists(video_path):
+        raise FileNotFoundError(f"视频文件不存在: {video_path}")
+
+    (
+        ffmpeg
+        .input(video_path, ss=time_seconds)  # ss参数指定时间点
+        .output(thumbnail_path, vframes=1)  # 只输出一帧
+        .overwrite_output()  # 使用overwrite_output方法来覆盖输出文件
+        .run()
+    )
+
+
+def upload_thumbnail_to_oss(object_name, file_path):
+    # object_name = "b7ec1001240181ceb5ec3e448c7f9b78.mp4_t_11.jpg"
+    # file_path = r"E:\playground\ai\projects\gemini-vision-perception\b7ec1001240181ceb5ec3e448c7f9b78.mp4_t_10.jpg"
+
+    # 创建 MinioFileUploader 实例
+    uploader = MinioFileUploader()
+    return uploader.upload_file(object_name, file_path)
+
+
+def format_mining_result(mining_result, video_file):
+    video_file_path = os.path.join('/tmp', video_file.display_name)
+
+    for item in mining_result:
+        if item['behaviour']['timeRange'] is None:
+            continue
+
+        time_range_str = item['behaviour']['timeRange']
+        start_time = time_to_seconds(time_range_str.split("-")[0])
+
+        thumbnail_file_name = video_file.display_name + "_t_" + str(start_time) + ".jpg"
+
+        thumbnail_path = os.path.join('/tmp', thumbnail_file_name)
+        get_thumbnail(video_file_path, thumbnail_path, start_time)
+
+        thumbnail_oss_url = upload_thumbnail_to_oss(thumbnail_file_name, thumbnail_path)
+        print(thumbnail_oss_url)
+
+        item['thumbnail_url'] = thumbnail_oss_url
+
+
 
 
 def main(video_file_name):
@@ -137,7 +200,11 @@ def main(video_file_name):
 
     app.logger.debug(response.text)
 
-    return json.loads(response.text)  # 解析JSON响应
+    mining_result = json.loads(response.text)
+
+    format_mining_result(mining_result, video_file)
+
+    return mining_result  # 解析JSON响应
 
 
 @app.route('/vision-analyze/video/upload', methods=['POST'])
@@ -164,8 +231,9 @@ def upload_video():
 
         return jsonify(response), 200
     finally:
-        os.remove(video_file_path)
-        app.logger.debug(f"Deleted temporary file: {video_file_path}")
+        # os.remove(video_file_path)
+        # app.logger.debug(f"Deleted temporary file: {video_file_path}")
+        app.logger.debug(f"Temporary file not deleted: {video_file_path}")
 
 
 @app.route('/vision-analyze/video/mining', methods=['POST'])

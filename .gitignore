@@ -1,3 +1,4 @@
 .env
 .idea
 **/app.log
+tag-mining/app.log
