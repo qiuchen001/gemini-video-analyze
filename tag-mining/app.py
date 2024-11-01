@@ -119,8 +119,6 @@ def format_mining_result(mining_result, video_file):
         item['thumbnail_url'] = thumbnail_oss_url
 
 
-
-
 def main(video_file_name):
     # video_file = upload_to_gemini(video_file_path)
     # wait_for_files_active(video_file)
@@ -221,11 +219,15 @@ def upload_video():
         video_file = upload_to_gemini(video_file_path)
         wait_for_files_active(video_file)
 
+        video_oss_url = upload_thumbnail_to_oss(filename, video_file_path)
+        print(video_oss_url)
+
         response = {
             "msg": "success",
             "code": 0,
             "data": {
-                "file_name": video_file.name
+                "file_name": video_file.name,
+                "video_url": video_oss_url
             }
         }
 

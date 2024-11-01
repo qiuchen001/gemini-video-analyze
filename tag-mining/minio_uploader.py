@@ -4,6 +4,8 @@ from minio import Minio
 from minio.error import S3Error
 from dotenv import load_dotenv
 from urllib.parse import urljoin
+import mimetypes
+
 
 
 load_dotenv()
@@ -37,8 +39,13 @@ class MinioFileUploader:
             print(f"桶 {bucket_name} 已存在")
 
         try:
+            # 获取文件的 MIME 类型
+            content_type, _ = mimetypes.guess_type(file_path)
+            if content_type is None:
+                content_type = "application/octet-stream"  # 默认 MIME 类型
+
             # 上传文件
-            self.minio_client.fput_object(bucket_name, object_name, file_path, content_type="image/jpeg")
+            self.minio_client.fput_object(bucket_name, object_name, file_path, content_type=content_type)
             print(f"文件 {file_path} 已上传到 {bucket_name}/{object_name}")
         except S3Error as e:
             print(f"上传文件时发生错误: {e}")
@@ -57,7 +64,7 @@ if __name__ == "__main__":
     # object_name = "path/to/your/object.txt"
     # file_path = "local/path/to/your/file.txt"
 
-    object_name = "b7ec1001240181ceb5ec3e448c7f9b78.mp4_t_12.jpg"
-    file_path = r"E:\tmp\b7ec1001240181ceb5ec3e448c7f9b78.mp4_t_0.jpg"
+    object_name = "b7ec1001240181ceb5ec3e448c7f9b78.mp4"
+    file_path = r"E:\workspace\ai-ground\videos\mining-well\b7ec1001240181ceb5ec3e448c7f9b78.mp4"
 
     uploader.upload_file(object_name, file_path)
