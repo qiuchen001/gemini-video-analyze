@@ -12,7 +12,7 @@ from minio_uploader import MinioFileUploader
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
+genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
 
 app = Flask(__name__)
 
@@ -210,7 +210,7 @@ def main(video_file_name):
 以JSON的格式输出：
     [
       {
-        "analysis": "对视频场景的详细分析...",  # 这里以中文输出
+        "analysis": "对视频场景的详细分析...",  
         "behaviour": {
           "behaviourId": "B1",
           "behaviourName": "突然制动",
@@ -260,7 +260,8 @@ def upload_video():
         return jsonify({"error": "No video file provided"}), 400
 
     video_file = request.files['video']
-    filename = secure_filename(video_file.filename)
+    # filename = secure_filename(video_file.filename)
+    filename = video_file.filename
     video_file_path = os.path.join('/tmp', filename)
     video_file.save(video_file_path)
 
