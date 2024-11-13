@@ -136,7 +136,7 @@ def format_mining_result(mining_result, video_file):
         # time_range_str = time_to_standard_format(item['behaviour']['timeRange'])
         start_time_formatted, end_time_formatted = time_to_standard_format(item['behaviour']['timeRange'])
         time_range_str = f"{start_time_formatted}-{end_time_formatted}"
-        item['timeRange'] = time_range_str
+        item['behaviour']['timeRange'] = time_range_str
 
         start_time = time_to_seconds(start_time_formatted)
 
