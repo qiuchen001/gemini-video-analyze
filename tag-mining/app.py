@@ -60,6 +60,33 @@ def wait_for_files_active(video_file):
     print()
 
 
+def time_to_standard_format(time_range_str):
+    """将 '0:13-0:14' 或 '1:23:45-1:23:46' 格式的时间范围统一转换为 '1:23:45-1:23:46' 格式"""
+
+    # 分割时间范围字符串
+    start_time_str, end_time_str = time_range_str.split('-')
+
+    # 将开始时间和结束时间分别转换为秒
+    start_seconds = time_to_seconds(start_time_str)
+    end_seconds = time_to_seconds(end_time_str)
+
+    # 将秒转换为 '1:23:45' 格式
+    start_time_formatted = seconds_to_time_format(start_seconds)
+    end_time_formatted = seconds_to_time_format(end_seconds)
+
+    # 返回格式化后的时间范围
+    # return f"{start_time_formatted}-{end_time_formatted}"
+    return start_time_formatted, end_time_formatted
+
+
+# 辅助函数：将秒转换为 '1:23:45' 格式
+def seconds_to_time_format(total_seconds):
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    seconds = total_seconds % 60
+    return f"{hours}:{minutes:02}:{seconds:02}"
+
+
 def time_to_seconds(time_str):
     """将 '0:13' 或 '1:23:45' 格式的时间转换为秒"""
     parts = list(map(int, time_str.split(':')))
@@ -106,8 +133,12 @@ def format_mining_result(mining_result, video_file):
         if item['behaviour']['behaviourId'] is None or item['behaviour']['behaviourName'] is None or item['behaviour']['timeRange'] is None:
             continue
 
-        time_range_str = item['behaviour']['timeRange']
-        start_time = time_to_seconds(time_range_str.split("-")[0])
+        # time_range_str = time_to_standard_format(item['behaviour']['timeRange'])
+        start_time_formatted, end_time_formatted = time_to_standard_format(item['behaviour']['timeRange'])
+        time_range_str = f"{start_time_formatted}-{end_time_formatted}"
+        item['timeRange'] = time_range_str
+
+        start_time = time_to_seconds(start_time_formatted)
 
         thumbnail_file_name = video_file.display_name + "_t_" + str(start_time) + ".jpg"
 
