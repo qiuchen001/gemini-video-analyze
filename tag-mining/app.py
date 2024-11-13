@@ -101,8 +101,9 @@ def upload_thumbnail_to_oss(object_name, file_path):
 def format_mining_result(mining_result, video_file):
     video_file_path = os.path.join('/tmp', video_file.display_name)
 
+    mining_result_new = []
     for item in mining_result:
-        if item['behaviour']['timeRange'] is None:
+        if item['behaviour']['behaviourId'] is None or item['behaviour']['behaviourName'] is None or item['behaviour']['timeRange'] is None:
             continue
 
         time_range_str = item['behaviour']['timeRange']
@@ -117,6 +118,8 @@ def format_mining_result(mining_result, video_file):
         print(thumbnail_oss_url)
 
         item['thumbnail_url'] = thumbnail_oss_url
+        mining_result_new.append(item)
+    return mining_result_new
 
 
 def main(video_file_name):
@@ -127,7 +130,7 @@ def main(video_file_name):
 
     system_instruction = """
     你是一名聪明、敏感、经验丰富的驾驶助理。
-    您可以分析驾驶场景视频，观察视频中对向车辆的驾驶行为，并评估这种行为是否会影响主车驾驶员的决策。
+    您可以分析驾驶场景视频，观察视频中对手车辆的驾驶行为，并评估这种行为是否会影响主车驾驶员的决策。
     评估这种行为是否会影响主车驾驶员的决策。
     """
 
@@ -139,7 +142,7 @@ def main(video_file_name):
     车道和信号问题
         B3: 无警告变道： 对手车辆在未发出信号的情况下变更车道。
         B4：并线过近： 对手车辆并线太近。
-        B5：占用多个车道： 对手车辆因体积、超载或操作不当而占用两条或两条以上车道，迫使主车驾驶员调整路线或速度以避免碰撞。
+        B5：占用多个车道： 对手车辆因体积、超载或操作不当而占用两条或两条以上车道(如：车身跨越车道分界线)，迫使主车驾驶员调整路线或速度以避免碰撞。
     违反交通规则
         B6：逆向行驶： 对手车辆逆向行驶。
         B7：闯红灯： 对手车辆在红灯亮起时驶过人行横道。
@@ -207,14 +210,14 @@ def main(video_file_name):
 
     在视频中，对对手车辆的行为进行分析，并使用分配的 ID 进行识别。可以有多种行为。
 
-以JSON的格式输出：
+以如下JSON的格式输出：
     [
       {
-        "analysis": "对视频场景的详细分析...",  
+        "analysis": "对视频场景的详细分析...",  # 这里翻译成中文输出
         "behaviour": {
           "behaviourId": "B1",
           "behaviourName": "突然制动",
-          "timeRange": "00:00:11-00:00:1" #  行为发生的时间范围
+          "timeRange": "00:00:11-00:00:12" #  行为发生的时间范围
         }
       },
       {
@@ -222,7 +225,7 @@ def main(video_file_name):
         "behaviour": {
           "behaviourId": "B2",
           "behaviourName": "突然加速/减速",
-          "timeRange": "00:00:11-00:00:1" #  行为发生的时间范围
+          "timeRange": "00:00:11-00:00:12" #  行为发生的时间范围
         }
       }
       ...
@@ -249,9 +252,7 @@ def main(video_file_name):
 
     mining_result = json.loads(response.text)
 
-    format_mining_result(mining_result, video_file)
-
-    return mining_result  # 解析JSON响应
+    return format_mining_result(mining_result, video_file)
 
 
 @app.route('/vision-analyze/video/upload', methods=['POST'])
