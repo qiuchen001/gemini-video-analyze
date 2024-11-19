@@ -13,10 +13,10 @@ index_params = {
   "params": {"nlist": 1024}
 }
 
-collection = Collection("summary_video_vector_v2")
+collection = Collection("summary_video_vector_v3")
 collection.create_index(
   field_name="embeding",
   index_params=index_params
 )
 
-utility.index_building_progress("summary_video_vector_v2")
+utility.index_building_progress("summary_video_vector_v3")
