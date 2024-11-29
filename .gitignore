@@ -2,3 +2,5 @@
 .idea
 **/app.log
 tag-mining/app.log
+__pycache__
+.vscode/
