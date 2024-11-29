@@ -76,4 +76,4 @@ class MilvusOperator:
         return
 
 
-text_image_vector = MilvusOperator('summary_video_db', 'summary_video_vector_v3', 'IP')
+summary_video_vector = MilvusOperator('summary_video_db', 'summary_video_vector', 'IP')
