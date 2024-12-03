@@ -38,37 +38,8 @@ def embed_fn(text):
 @embedding_summary_retrieval_bp.route('/vision-analyze/video/embedding-summary-retrieval', methods=['POST'])
 def embedding_summary_video():
     txt = request.form.get("txt")
-    # video_url = request.form.get("video_url")
-
     embeding = embed_fn(txt)
-    # print(embeding)
-    # print(embeding.shape)
-
-
     results = summary_video_vector.search_data(embeding)
-    print("results:", results)
-    for item in results:
-        path = item.get("path")
-        print(f"视频地址：{path}")
-
-        # 向量化
-    # update_image_vector(embeding, summary_video_vector)
-
-
-    # data_list = []
-    # m_id = str(uuid.uuid4())
-    # data_info = {
-    #     "m_id": m_id,
-    #     "embeding": embeding,
-    #     "path": video_url,
-    #     "thumbnail_path": "",
-    #     "summary_txt": summary_txt,
-    # }
-    # data_list.append(data_info)
-    
-    # # 向量化
-    # # update_image_vector(embeding, summary_video_vector)
-    # update_image_vector(data_list)
 
     response = {
         "msg": "success",
