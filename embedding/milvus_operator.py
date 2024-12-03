@@ -6,7 +6,7 @@ load_dotenv()
 
 
 class MilvusOperator:
-    def __init__(self, database, collection, metric_type):
+    def __init__(self, database, collection, metric_type='COSINE'):
         self.database = database
         self.coll_name = collection
         self.metric_type = metric_type
@@ -17,7 +17,7 @@ class MilvusOperator:
         collection = Collection(self.coll_name)
         mr = collection.insert(data)
 
-    def search_data(self, embeding):
+    def search_data(self, embeding, top_k=6):
         collection = Collection(self.coll_name)
         collection.load()
 
@@ -32,9 +32,9 @@ class MilvusOperator:
             data=[embeding],
             anns_field="embeding",
             param=search_params,
-            limit=16,
+            limit=top_k,
             expr=None,
-            output_fields=['m_id', 'path'],
+            output_fields=['m_id', 'path', 'summary_txt'],
             consistency_level="Strong"
         )
         entity_list = []
