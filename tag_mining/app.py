@@ -8,7 +8,9 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import logging
 from werkzeug.utils import secure_filename
-from minio_uploader import MinioFileUploader
+from ..utils.minio_uploader import MinioFileUploader
+
+
 
 load_dotenv()
 

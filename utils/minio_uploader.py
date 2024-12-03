@@ -2,12 +2,9 @@ import os
 
 from minio import Minio
 from minio.error import S3Error
-from dotenv import load_dotenv
 from urllib.parse import urljoin
 import mimetypes
-
-
-
+from dotenv import load_dotenv
 load_dotenv()
 
 

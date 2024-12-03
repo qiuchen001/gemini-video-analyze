@@ -5,7 +5,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from flask import Blueprint, request, jsonify, current_app
 from utils.common import *
-from prompts import mining
+from ..prompts import mining
 
 load_dotenv()
 
@@ -71,11 +71,11 @@ def format_mining_result(mining_result, video_url):
         os.remove(thumbnail_local_path)
     return mining_result_new
 
-def extract_frames_and_convert_to_base64(video_url):
-    frames_image_folder = os.path.join("/tmp", get_uuid())
-    extract_frames_from_video(video_url, frames_image_folder)
-    base64_images = video_frames_and_convert_to_base64(frames_image_folder)
-    return base64_images
+# def extract_frames_and_convert_to_base64(video_url):
+#     frames_image_folder = os.path.join("/tmp", get_uuid())
+#     extract_frames_from_video(video_url, frames_image_folder)
+#     base64_images = video_frames_and_convert_to_base64(frames_image_folder)
+#     return base64_images
 
 def mining_video_handler(video_url):
     base64_images = extract_frames_and_convert_to_base64(video_url)

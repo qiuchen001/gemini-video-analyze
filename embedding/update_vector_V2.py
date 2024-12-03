@@ -1,10 +1,9 @@
 from sentence_transformers import SentenceTransformer
 
 
-import sys,os
-sys.path.append(os.path.abspath('..'))
 
-from milvus_operator import MilvusOperator, summary_video_vector
+
+from .milvus_operator import summary_video_vector
 
 
 def embed_fn(text):
@@ -12,7 +11,6 @@ def embed_fn(text):
     return model.encode(text, normalize_embeddings=True)
 
 
-# def update_image_vector(embedding, operator: MilvusOperator):
 def update_image_vector(data_list):
     # import uuid
     # uuid = str(uuid.uuid4())
@@ -27,7 +25,7 @@ def update_image_vector(data_list):
 
 
 if __name__ == '__main__':
-    text = '飞机'
+    text = '危险超车'
     embeding = embed_fn(text)
     print(embeding)
     print(embeding.shape)

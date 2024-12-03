@@ -7,7 +7,7 @@ import glob
 import shutil
 from flask import Flask, request, jsonify
 import logging
-from minio_uploader import MinioFileUploader
+from .minio_uploader import MinioFileUploader
 
 app = Flask(__name__)
 

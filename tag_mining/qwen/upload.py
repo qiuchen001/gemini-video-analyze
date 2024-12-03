@@ -1,7 +1,8 @@
 import os
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
-from minio_uploader import MinioFileUploader
+from utils.minio_uploader import MinioFileUploader
+
 
 upload_bp = Blueprint('upload', __name__)
 
