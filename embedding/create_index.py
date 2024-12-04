@@ -8,7 +8,7 @@ conn = connections.connect(host=os.getenv("SERVER_HOST"), port=19530)
 db.using_database("summary_video_db")
 
 index_params = {
-  "metric_type": "COSINE",
+  "metric_type": "IP",
   "index_type": "IVF_FLAT",
   "params": {"nlist": 512}
 }
