@@ -34,6 +34,17 @@ def embed_fn(text):
     return model.encode(text, normalize_embeddings=True)
 
 
+def generate_video_thumbnail_url(video_url):
+    start_time = 0
+    thumbnail_file_name =  os.path.basename(video_url) + "_t_" + str(start_time) + ".jpg"
+    thumbnail_local_path = os.path.join('/tmp', thumbnail_file_name)
+    generate_thumbnail_from_video(video_url, thumbnail_local_path, start_time)
+    thumbnail_oss_url = upload_thumbnail_to_oss(thumbnail_file_name, thumbnail_local_path)
+    print(f"thumbnail_oss_url:{thumbnail_oss_url}")
+    os.remove(thumbnail_local_path)
+    current_app.logger.debug(f"Deleted temporary file: {thumbnail_local_path}")
+
+
 @embedding_summary_bp.route('/vision-analyze/video/embedding-summary', methods=['POST'])
 def embedding_summary_video():
     summary_txt = request.form.get("summary_txt")
@@ -43,9 +54,7 @@ def embedding_summary_video():
     print(embeding)
     print(embeding.shape)
 
-        # 向量化
-    # update_image_vector(embeding, summary_video_vector)
-
+    thumbnail_oss_url = generate_video_thumbnail_url(video_url)
 
     data_list = []
     m_id = str(uuid.uuid4())
@@ -53,6 +62,7 @@ def embedding_summary_video():
         "m_id": m_id,
         "embeding": embeding,
         "path": video_url,
+        "thumbnail_path": thumbnail_oss_url,
         "thumbnail_path": "",
         "summary_txt": summary_txt,
     }
