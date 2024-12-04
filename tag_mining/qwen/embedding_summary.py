@@ -43,6 +43,7 @@ def generate_video_thumbnail_url(video_url):
     print(f"thumbnail_oss_url:{thumbnail_oss_url}")
     os.remove(thumbnail_local_path)
     current_app.logger.debug(f"Deleted temporary file: {thumbnail_local_path}")
+    return thumbnail_oss_url
 
 
 @embedding_summary_bp.route('/vision-analyze/video/embedding-summary', methods=['POST'])
@@ -63,13 +64,12 @@ def embedding_summary_video():
         "embeding": embeding,
         "path": video_url,
         "thumbnail_path": thumbnail_oss_url,
-        "thumbnail_path": "",
         "summary_txt": summary_txt,
+        "tags": ["jazz", "blues"]
     }
     data_list.append(data_info)
     
     # 向量化
-    # update_image_vector(embeding, summary_video_vector)
     update_image_vector(data_list)
 
     response = {

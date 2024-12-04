@@ -12,7 +12,7 @@ embeding = FieldSchema(name="embeding", dtype=DataType.FLOAT_VECTOR, dim=512,)
 path = FieldSchema(name="path", dtype=DataType.VARCHAR, max_length=256,)
 thumbnail_path = FieldSchema(name="thumbnail_path", dtype=DataType.VARCHAR, max_length=256,)
 summary_txt = FieldSchema(name="summary_txt", dtype=DataType.VARCHAR, max_length=3072,)
-tags = FieldSchema(name="tags", dtype=DataType.ARRAY, max_length=256,)
+tags = FieldSchema(name="tags", dtype=DataType.ARRAY, max_length=256, element_type=DataType.VARCHAR, max_capacity=10)
 schema = CollectionSchema(
   fields=[m_id, embeding, path, thumbnail_path, summary_txt, tags],
   description="text to video summary embeding search",
