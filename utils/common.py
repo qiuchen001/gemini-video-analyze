@@ -5,6 +5,7 @@ import cv2
 import base64
 import glob
 import shutil
+import ffmpeg
 from flask import Flask, request, jsonify
 import logging
 from .minio_uploader import MinioFileUploader
@@ -134,3 +135,15 @@ def extract_frames_and_convert_to_base64(video_url):
     extract_frames_from_video(video_url, frames_image_folder)
     base64_images = video_frames_and_convert_to_base64(frames_image_folder)
     return base64_images
+
+
+def generate_thumbnail_from_video(video_url, thumbnail_path, time_seconds):
+    if not video_url:
+        raise ValueError("视频URL不能为空")
+    (
+        ffmpeg
+        .input(video_url, ss=time_seconds)
+        .output(thumbnail_path, vframes=1)
+        .overwrite_output()
+        .run()
+    )

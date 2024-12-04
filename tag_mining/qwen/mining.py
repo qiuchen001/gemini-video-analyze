@@ -1,6 +1,5 @@
 import os
 import json
-import ffmpeg
 from openai import OpenAI
 from dotenv import load_dotenv
 from flask import Blueprint, request, jsonify, current_app
@@ -43,16 +42,16 @@ def time_to_seconds(time_str):
     else:
         raise ValueError("时间格式不正确，应为 '0:13' 或 '1:23:45'")
 
-def generate_thumbnail_from_video(video_url, thumbnail_path, time_seconds):
-    if not video_url:
-        raise ValueError("视频URL不能为空")
-    (
-        ffmpeg
-        .input(video_url, ss=time_seconds)
-        .output(thumbnail_path, vframes=1)
-        .overwrite_output()
-        .run()
-    )
+# def generate_thumbnail_from_video(video_url, thumbnail_path, time_seconds):
+#     if not video_url:
+#         raise ValueError("视频URL不能为空")
+#     (
+#         ffmpeg
+#         .input(video_url, ss=time_seconds)
+#         .output(thumbnail_path, vframes=1)
+#         .overwrite_output()
+#         .run()
+#     )
 
 def format_mining_result(mining_result, video_url):
     mining_result_new = []
