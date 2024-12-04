@@ -34,7 +34,7 @@ class MilvusOperator:
             param=search_params,
             limit=top_k,
             expr=None,
-            output_fields=['m_id', 'path', 'summary_txt'],
+            output_fields=['m_id', 'path', 'summary_txt', 'tags'],
             consistency_level="Strong"
         )
         entity_list = []

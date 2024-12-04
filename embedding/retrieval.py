@@ -10,7 +10,7 @@ db.using_database("summary_video_db")
 coll_name = 'summary_video_vector'
  
 search_params = {
-    "metric_type": 'IP',
+    "metric_type": 'COSINE',
     "offset": 0,
     "ignore_growing": False,
     "params": {"nprobe": 16}
