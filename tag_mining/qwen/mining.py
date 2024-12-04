@@ -106,15 +106,26 @@ def parse_json_string(json_str):
     parsed_data = json.loads(cleaned_str)
     return parsed_data
 
+
+def mining_video_center(video_url):
+    mining_result = mining_video_handler(video_url)
+    js = json.loads(mining_result)
+    content = js['choices'][0]['message']['content']
+    mining_json = parse_json_string(content)
+    return format_mining_result(mining_json, video_url)  
+
+
 @mining_bp.route('/vision-analyze/video/mining', methods=['POST'])
 def mining_video():
     video_url = request.form.get('file_name')
     try:
-        mining_result = mining_video_handler(video_url)
-        js = json.loads(mining_result)
-        content = js['choices'][0]['message']['content']
-        mining_json = parse_json_string(content)
-        mining_result_new = format_mining_result(mining_json, video_url)
+        # mining_result = mining_video_handler(video_url)
+        # js = json.loads(mining_result)
+        # content = js['choices'][0]['message']['content']
+        # mining_json = parse_json_string(content)
+        # mining_result_new = format_mining_result(mining_json, video_url)
+        mining_result_new = mining_video_center(video_url)
+
         response = {
             "msg": "success",
             "code": 0,
